@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Simplex Method Demo</title>
+	<script src = "LPdefs.js"></script>
+	<script src = "LPmethods.js"></script>
+	<script>
+		lp_reportErrorsTo=lp_reportSolutionTo="solutionout";
+		var lp_demo_exampleNumber=0;
+		var lp_demo_accuracy=6;
+		var lp_demo_mode="decimal";
+		var lp_demo_verboseLevel=lp_verbosity_none;
+		var exampleStr = [
+		"Maximize p = (1/2)x + 3y + z + 4w subject to \nx + y + z + w <= 40\n2x + y - z - w >= 10\nw - y >= 12"
+		,
+		"minimize z = 900x1 + 1400x2 + 700x3 + 1000x4 + 1700x5 + 900x6 subject to\nx1 + x2 + x3 <= 10\nx4 + x5 + x6 <= 10\nx1 + x4 >= 6\nx2 + x5 >= 4\nx3 + x6 >= 4\nx4 - x6 <= 0"
+		,
+		
+		"Maximize p = (1/2)x + 3y + z + 4w subject to \nx + y + z + w <= 40 \n2x + y - z - w >= 10 \nw - y >= 12 \ninteger w, x, y, z"
+		,
+		"Maximize p = x + 2y + 3z subject to \nx + y <= 20.5\ny + z <= 20.5\nx + z <= 30.5\ninteger x, y, z" ,
+		"Maximize p = x+y\nx+y<=.75\nx+y>=.5\ninteger x,y"]
+
+		function showExamples() {
+			document.getElementById("inputarea").value=exampleStr[lp_demo_exampleNumber%exampleStr.length];
+			lp_demo_exampleNumber++;
+		}
+
+		function clearAll() {
+			document.getElementById("inputarea").value="";
+			document.getElementById("solutionout").innerHTML="An optimal solution (or message) will appear here.";
+			document.getElementById("outputarea").innerHTML="The tableaus will appear here if desired.";
+		}
+
+		function clearOutput() {
+			document.getElementById("outputarea").innerHTML="The tableaus will appear here if desired.";
+		}
+		
+		function showOutput( str ) {
+			document.getElementById("outputarea").innerHTML = str;
+		}
+		
+		function showSolution( str ) {
+			document.getElementById("solutionout").innerHTML = str;
+		}
+
+		function adjustAccuracy() {
+			var inAcc=parseInt(document.getElementById("accuracyDig").value);
+			if ( (inAcc<=0)||(inAcc>13)||(isNaN(inAcc)) ) {
+				alert("Must be in integer in the range 0-13")
+				document.getElementById("accuracyDig").value=6;
+			}
+			else lp_demo_accuracy = inAcc;
+		}
+
+		function setMode() {
+			lp_demo_mode=parseInt(document.querySelector('input[name="modepicker"]:checked').id); // ids are conveniently set to equal the mode
+		}
+
+		function setShowTabl() {
+			var theId = document.querySelector('input[name="displaytabl"]:checked').id;
+			switch ( theId ) {
+				case "yesTabl":		lp_demo_verboseLevel = lp_verbosity_tableaus; break;
+				case "andSolns":	lp_demo_verboseLevel = lp_verbosity_solutions; break;
+				default:			lp_demo_verboseLevel = lp_verbosity_none; break;
+			}
+// 			lp_demo_verboseLevel = (theId=="yesTabl") ? lp_verbosity_tableaus : lp_verbosity_none;
+		}
+	</script>
+</head>
+
+<body>
+
+	<div id = "container" style="width:100%;border:thin black solid;background-color:#dddddd;font-size:12px">
+		<div id="info1" style="width:100%;text-align:center;margin:5px 0 5px 0">
+			Type your linear programming problem below. (Press "Examples" to cycle through some problems already set up.) Then press "Solve".
+		</div>
+		<center>
+			<div id="input">
+			<textarea rows="15" cols="15" id="inputarea" style="width:95%"></textarea>
+			</div>
+			<div id="info2" style="width:100%;text-align:center;margin:5px 0 5px 0">
+				Solution:
+			</div>
+			<div id="solutionout" style="text-align:left;background-color:white;width:95%;font-family:monospace;border:thin solid;padding:10px">
+				An optimal solution (or message) will appear here.
+			</div>
+			<div id="buttonsdiv" style="width:100%;text-align:center;margin:5px 0 5px 0">
+				<input type="button" value="Solve" 
+				onClick="clearOutput();
+					adjustAccuracy();setMode();setShowTabl();
+					var Q = new lpProblem( document.getElementById('inputarea').value );
+					lp_verboseLevel=lp_demo_verboseLevel;
+					Q.mode=lp_demo_mode;
+					Q.sigDigits=lp_demo_accuracy;
+					try{Q.solve()}
+					finally{showOutput( lp_trace_string );showSolution( Q.solutionToString() );}
+				">
+					&#160; &#160;
+				<input type="button" value="Examples" onClick="showExamples();">
+					&#160; &#160;
+				<input type="button" value="Erase everything" onClick="clearAll();">
+				
+				<br>&#160;<br>
+				
+				<div style="display: inline-block; vertical-align:middle; text-align:left">
+					<input type="radio" name="displaytabl" id="noTabl"> Hide tableaus.
+					<br>
+					<input type="radio" checked="true" name="displaytabl" id="yesTabl"> Show tableaus (slower).
+					<br>
+					<input type="radio" name="displaytabl" id="andSolns"> Show tableaus and intermediate solutions.
+				</div>
+				&#160; &#160; 
+				Tableau mode: <div style="display: inline-block; vertical-align:middle; text-align:left">
+					<input type="radio" checked="true" name="modepicker" id="3" value="decimal"> decimal
+					<br>
+					<input type="radio" name="modepicker" id="2" value="fraction"> fraction
+					<br>
+					<input type="radio" name="modepicker" id="1" value="integer"> integer
+				</div>
+					&#160; &#160;
+				Rounding: <input type="text" id="accuracyDig" size="1" value="6"> significant digits
+					&#160; &#160;
+			</div>
+			<div id="outputarea" style="width: 95%; background-color:white; font-family:monospace; border: thin solid; padding: 10px; text-align:left">
+				The tableaus will appear here if desired.
+			</div>
+			<div id="spacer" style="height:20px"></div>
+		</center>
+	</div>
+</body>
+</html>

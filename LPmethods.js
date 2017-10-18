@@ -732,8 +732,10 @@ lpProblem.prototype.formatLastSolution = function ( includeSlackVariables = fals
 }
 
 
-lpProblem.prototype.formatIntegerObjectiveValue = function ( ) {
-	return Math.round( this.integerObjValue );
+lpProblem.prototype.formatIntegerObjectiveValue = function ( mode = 0 ) {
+	if ( mode == 0 ) mode = this.mode;
+	return (mode == lp_Decimal) ? roundSigDig(this.integerObjValue, this.sigDigits)
+								: this.integerObjValue.toFracStr();
 }
 
 

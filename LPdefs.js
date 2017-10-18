@@ -179,7 +179,7 @@ class lpProblem
 	formatLastSolution ( includeSlackVariables = false, mode = 0 ) {}
 
 											// use these to get the integer solution when doing ILP
-	formatIntegerObjectiveValue () {}
+	formatIntegerObjectiveValue ( mode = 0) {}
 	formatIntegerSolution ( includeSlackVariables = false ) {}
 
 											// return string showing values of vars in last or integer solution,

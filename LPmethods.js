@@ -119,7 +119,9 @@ lpProblem.prototype.solve = function ()
 			if (indx == -1) { 
 				p.status=Math.max(p.status, lp_optimal); // Fix 04 was just lp_optimal
 				if ( lp_BNB_foundSolution ) {
-					if ( p.objectiveValues[p.objectiveValues.length-1] > lp_BNB_bestObjectiveVal ) {
+					if ( (p.maximize && p.objectiveValues[p.objectiveValues.length-1] > lp_BNB_bestObjectiveVal)
+						  ||
+						 (!p.maximize && p.objectiveValues[p.objectiveValues.length-1] < lp_BNB_bestObjectiveVal) ) {
 						lp_BNB_bestObjectiveVal = p.objectiveValues[p.objectiveValues.length-1];
 						lp_BNB_bestSolution = p.solutions[p.solutions.length-1];
 						if ( lp_verboseLevel >= lp_verbosity_solutions ) {
@@ -139,7 +141,10 @@ lpProblem.prototype.solve = function ()
 			else {
 				// branch at that index, but only if we might do better than we already have
 				if ( !lp_BNB_foundSolution
-						 || p.objectiveValues[p.objectiveValues.length-1] > lp_BNB_bestObjectiveVal )
+						 || 
+					 (p.maximize && p.objectiveValues[p.objectiveValues.length-1] > lp_BNB_bestObjectiveVal)
+						 ||
+					 (!p.maximize && p.objectiveValues[p.objectiveValues.length-1] < lp_BNB_bestObjectiveVal) )
 					branchAndBound( p, indx );
 				else
 

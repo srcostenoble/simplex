@@ -92,7 +92,7 @@ class lpProblem
 
 			// false for minimize
 		this.maximize = (problem != null && typeof problem.maximize == 'boolean') 
-							? problem.isIntegral : true;
+							? problem.maximize : true;
 
 			// either supplied with string problem or generated
 		this.objectiveName = (problem != null && typeof problem.objectiveName == 'string') 

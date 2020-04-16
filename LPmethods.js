@@ -20,6 +20,7 @@
 // Fix 04: status of lp_no_solution being wrongly changed to lp_optimal resulting in various problems reporting a solution when there is one.
 // Fix 05 no more error on empty feasible region; affects branch and bound as well.
 // Fix 06 What if branch and bound finds no integer solutions at all...
+// Fix 07 Removed spurious rounding when displaying as fractions.
 
 
 
@@ -861,7 +862,7 @@ tableau.prototype.stringArray = function ( theMode, sigDigs ) {
 		case lp_Fraction:		// fraction mode, convert all entries to fractions
 			for ( i = 1; i <= nRows; i++ )
 				for ( j = 1; j <= nCols; j++ )
-					tabl[i][j] = roundSigDig( tabl[i][j], sigDigs ).toFracStr();
+					tabl[i][j] = tabl[i][j].toFracStr();	// Fix 07: removed roundSigDig( tabl[i][j], sigDigs )
 			break;
 
 		case lp_Decimal:		// decimal mode, just convert to strings

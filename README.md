@@ -25,7 +25,7 @@ Maximize <linear objective> subject to
 ```
 integer <comma separated list of variables>
 ```
-Specify linear expressions using juxtaposition for multiplication, so `2x + 3y`, *not* `2*x+3*y`. Use `<=` and `>=` to specify inequalities. The objective function may be specified as a linear expression or as an equation specifying the name of the objective function, like `p = 2x + 3y`. Constraints should have the form `<linear expression> <= <number>` where the inequality could also be `>=` or `=`. Do not put commas in numbers.
+Specify linear expressions using juxtaposition for multiplication, so `2x + 3y`, *not* `2*x+3*y`. Use `<=` and `>=` to specify inequalities. The objective function may be specified as a linear expression or as an equation specifying the name of the objective function, like `p = 2x + 3y`. Constraints should have the form `<linear expression> <= <number>` where the inequality could also be `>=` or `=`. The number on the right hand side must be non-negative. Do not put commas in numbers.
 
 #### Specify the LP problem by setting the objective and constraint properties.
 - Set `p.objective` to a string representing the objective function, in the form `[max|min]imize [var =] <linear expression>`. 

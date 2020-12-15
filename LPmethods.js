@@ -21,6 +21,7 @@
 // Fix 05 no more error on empty feasible region; affects branch and bound as well.
 // Fix 06 What if branch and bound finds no integer solutions at all...
 // Fix 07 Removed spurious rounding when displaying as fractions.
+// Fix 08 British en Mamimise Dec 9 2020
 
 
 
@@ -230,7 +231,7 @@ lpProblem.prototype.solve = function ()
 		}
 		var inArr = pStr.split(',');
 		var obj = inArr[0];
-		obj = obj.replace(/(imizar)|(imize)/,"").replace(/sujet/,"subject"); // regularize language
+		obj = obj.replace(/(imizar)|(imize)|(imise)/,"").replace(/sujet/,"subject"); // regularize language and Fix 08
 
 		if ( obj.indexOf("max") == 0 )
 			p.maximize = true;

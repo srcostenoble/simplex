@@ -197,7 +197,7 @@ lpProblem.prototype.solve = function ()
 
 			splitProblem( p );			// again, these may throw errors
 			extractUnknowns( p );
-			extractCoefficients( p )
+			extractCoefficients( p );
 			createFirstTableau( p );
 			
 			p.status = lp_parsed;	// created tableau and unknowns from problem string
@@ -240,7 +240,7 @@ lpProblem.prototype.solve = function ()
 		else
 			throw lp_UnspecMaxMinErr;
 		
-		var coreObj = (obj.indexOf("subject") == -1) 
+		var coreObj = (obj.indexOf("subject") == -1)  // finds objective function!
 					  ? obj.substring(4)
 					  : obj.substring(4, Math.max(5,obj.indexOf("subject")-1));
 		if (coreObj.indexOf("=") > -1) 
@@ -270,7 +270,18 @@ lpProblem.prototype.solve = function ()
 		var outA = ("+"+p.objective)
 						.replace(/ /g,"")
 						.replace(/[\+\-][0-9.\/\(\)]*/g,",")
+						.replace(/,+/g,",") // removes strings of commas if there are constants in the objective function
 						.split(",");
+
+		if (outA[outA.length - 1] === '') { outA.pop(); }
+		
+		let objConstants = [...p.objective.matchAll(/\+([0-9]+)$/g)];
+		objConstants = objConstants.concat([...p.objective.matchAll(/\+([0-9]+)\+/g)]);
+
+		for (let i = 0; i < objConstants.length; i++) {
+			p.objectiveExtraConstant = p.objectiveExtraConstant + objConstants[i][1];
+		}
+
 		for ( var i=0; i < p.constraints.length; i++ )
 		{
 			var kA = ("+"+p.constraints[i])
@@ -394,7 +405,7 @@ lpProblem.prototype.solve = function ()
 		}
 		for (var j=1;j<numRows+1;j++)
 			firstTableau[i].push( (i!=j)? 0 : 1 );
-		firstTableau[i].push(0);
+		firstTableau[i].push(p.objectiveExtraConstant); // objective row value?
 			
 //		firstTableau.roundToSigDig(p.maxSigDigits); // round to avoid false negatives or non-zero elements
 		// Fix 01; in the first tableau there should be none of that, as no calculation is done prior to this

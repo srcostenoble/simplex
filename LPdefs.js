@@ -73,7 +73,7 @@ var lp_noNiceSolutionErr = "No solution with the desired integer values exists"
 
 class lpProblem
 {
-	constructor ( problem = null ) {
+	constructor ( problem = null ) { // problem is itself an lpProblem
 			// linear expression to optimize
 		this.objective = (problem != null && typeof problem.objective == 'string') 
 							? problem.objective : "";			
@@ -122,6 +122,9 @@ class lpProblem
 			// similar for objective function
 		this.objectiveCoeffs = (problem != null && Array.isArray(problem.objectiveCoeffs))
 							? problem.objectiveCoeffs : [];
+			// e.g. the "2" in p = x+y+2
+		this.objectiveExtraConstant = (problem != null && typeof problem.objectiveExtraConstant == 'number') 
+								? problem.numActualUnknowns : 0;
 
 			// additional constraints used in integer programming, indexed like integerUnknowns
 		this.integerMins = (problem != null && Array.isArray(problem.integerMins))
